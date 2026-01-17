@@ -1,11 +1,7 @@
 """
 Model to represent the data
 
-Probably not necessary since the actual db is stored as the text file. And the controller just manipulates data.txt directly. But for now
-Im storing the valid departments here
 
-If I get around to it, putting a reference to the file here and moving all of the actual opening and closing of the file to this class would probably 
-be more consistent with a MVC architecture. But it works as is.
 """
 
 

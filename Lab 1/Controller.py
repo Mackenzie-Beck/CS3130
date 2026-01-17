@@ -1,6 +1,6 @@
 """
 Controller to handle all user inputs.
-Interacts with the model (data.txt).
+Interacts with the Model.
 Alters the view .
 """
 
@@ -27,7 +27,7 @@ class Controller:
 
         #print("Searching for employee ID:", id_num)
         try:
-            with open("data.txt", "r") as f:
+            with open(self.Model.database_file_name, "r") as f:
                 for line in f:
                     data = self.parse_line(line)
                     #print("data[0]:", data[0])
@@ -118,9 +118,11 @@ class Controller:
         else:
             print("Adding new record to database:\n")
             new_record = id_num + ":" + fname + ":" + lname + ":" + department
-            with open("data.txt", "a") as f:
-                f.write(new_record+ '\n')
-
+            try:
+                with open(self.Model.database_file_name, "a") as f:
+                    f.write(new_record+ '\n')
+            except FileNotFoundError:
+                print("database file not found")
 
 
 
@@ -188,19 +190,22 @@ class Controller:
             response = input()
             if response.lower() == 'y':
                 print("Deleting employee record from database")
-                with open("data.txt", "r") as f:
-                    for line in f:
-                        line_data = self.parse_line(line)
-                        if line_data[0] == id_num:
-                            continue
-                        else:
-                            employee_records.append(line_data)
+                try:
+                    with open(self.Model.database_file_name, "r") as f:
+                        for line in f:
+                            line_data = self.parse_line(line)
+                            if line_data[0] == id_num:
+                                continue
+                            else:
+                                employee_records.append(line_data)
 
-                # clear the existing file content and add records
-                with open("data.txt", "w") as f:
-                    for record in employee_records:
-                        new_line = record[0] + ":" + record[1] + ":" + record[2] + ":" + record [3]
-                        f.write(new_line + "\n")
+                    # clear the existing file content and add records
+                    with open(self.Model.database_file_name, "w") as f:
+                        for record in employee_records:
+                            new_line = record[0] + ":" + record[1] + ":" + record[2] + ":" + record [3]
+                            f.write(new_line + "\n")
+                except FileNotFoundError:
+                    print("Databse file not found")
 
 
 
@@ -209,10 +214,13 @@ class Controller:
 
     def display_employees(self):
         print("Display employees:\n")
-        with open("data.txt", "r") as f:
-            for line in f:
-                self.print_employee(self.parse_line(line))
-                print("\n-----")
+        try:
+            with open(self.Model.database_file_name, "r") as f:
+                for line in f:
+                    self.print_employee(self.parse_line(line))
+                    print("\n-----")
+        except FileNotFoundError:
+            print("Databse file not found")
 
     def exit_program(self):
         print("Exiting Program\n")
