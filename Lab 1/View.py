@@ -1,0 +1,25 @@
+"""his class handles the different views, basically only a main menu for a simple project like this.
+"""
+
+class View:
+    controller = None
+
+    def main_menu(self):
+        """Main entry point of the program."""
+
+
+        print("--\n\n")
+        print("Employees:\n")
+
+        print("Select one of the following:\n")
+        print("    1. Add a new employee\n")
+        print("    2. Search for an employee\n")
+        print("    3. Remove an employee\n")
+        print("    4. Display Employees\n")
+        print("    5. Exit\n\n")
+
+        print("Enter your option: ")
+        selection = input()
+        print("\n\n--")
+
+        self.controller.handle_input(selection)
