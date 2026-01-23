@@ -9,7 +9,28 @@ class Controller:
     View = None
     Model = None
 
-    
+
+
+    def create_new_db(self):
+        self.Model.create_new_db()
+
+    def is_db_empty(self):
+        
+        with open(self.Model.database_file_name, "r") as f: 
+            if not f.read(1):
+                print("Database is currently empty!")
+                return True
+            return False
+
+    def handle_file_not_found(self):
+        print("Database not found, would you like to create one? (Y/N)")
+        sel = input()
+        if sel.lower() == "y":
+            self.create_new_db()
+            self.View.main_menu()
+        if sel.lower() == "n":
+            print("No database provided, exiting program")
+
     def parse_line(self, line: str):
         # returns a list of the data elements for a single row in the database
         tmp = line.strip()
@@ -38,16 +59,31 @@ class Controller:
                         return data
                 return None
         except FileNotFoundError:
-            print("data.txt could not be found")
+            self.handle_file_not_found()
 
+
+
+    def is_id_num_valid_number(self, id_num:str):
+                # check if employee id is a valid int
+        #print("is_id_num_valid")
+        try:
+            int(id_num)
+        except ValueError:
+            print("Employee ID must be a number, please re-enter: ")
+            return False
+        if int(id_num) < 0:
+            print("Employee Id must be a positive integer, please re-enter: ")
+            return False
+        if len(id_num) != 4:
+            print("Employee ID must be 4 digits long, please re-enter: ")
+            return False
+        return True
 
     def is_id_num_valid(self, id_num :str):
         # check if employee id is a valid int
         #print("is_id_num_valid")
-        if not id_num.isdecimal():
-            print("Employee ID must be a number, please re-enter: ")
+        if not self.is_id_num_valid_number(id_num):
             return False
-
 
         # check if employee already exists
 
@@ -122,7 +158,7 @@ class Controller:
                 with open(self.Model.database_file_name, "a") as f:
                     f.write(new_record+ '\n')
             except FileNotFoundError:
-                print("database file not found")
+                self.handle_file_not_found()
 
 
 
@@ -148,11 +184,13 @@ class Controller:
 
         print("Enter employee ID number: ")
         id_num = input()
-
+        while not self.is_id_num_valid_number(id_num):
+            id_num = input()
 
         data = self.get_employee_data_by_id(id_num)
 
-
+        if self.is_db_empty():
+            self.View.main_menu()
         if data:
             print("Employee found!")
             print("--------------------\n")
@@ -168,7 +206,7 @@ class Controller:
             if inp == "2":
                 self.View.main_menu()
             else:
-                print("/nNow thats not a number I said but I'll just take you back to the main menu.\n")
+                print("/Now thats not a number like I said but I'll just take you back to the main menu.\n")
                 self.View.main_menu()
         else:
             print("Employee not found. Please try again.")
@@ -181,10 +219,15 @@ class Controller:
         id_num = input()
         employee_records = []
 
+        while not self.is_id_num_valid_number(id_num):
+            id_num = input()
+
+        if self.is_db_empty():
+            self.View.main_menu()
+
         if not self.get_employee_data_by_id(id_num):
             print("Employee", id_num, "not found")
             self.remove_employee()
-
         else:
             print("Are you sure you want to delete employee:", id_num, "(Y/N)")
             response = input()
@@ -205,8 +248,8 @@ class Controller:
                             new_line = record[0] + ":" + record[1] + ":" + record[2] + ":" + record [3]
                             f.write(new_line + "\n")
                 except FileNotFoundError:
-                    print("Databse file not found")
-
+                    self.handle_file_not_found()
+                self.View.main_menu()
 
 
 
@@ -216,11 +259,14 @@ class Controller:
         print("Display employees:\n")
         try:
             with open(self.Model.database_file_name, "r") as f:
+                self.is_db_empty()
                 for line in f:
                     self.print_employee(self.parse_line(line))
                     print("\n-----")
+
+                self.View.main_menu()
         except FileNotFoundError:
-            print("Databse file not found")
+            self.handle_file_not_found()
 
     def exit_program(self):
         print("Exiting Program\n")

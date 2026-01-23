@@ -12,6 +12,10 @@ class Model:
     database_file_name = "data.txt"
 
 
+    def create_new_db(self):
+        with open(self.database_file_name, "w"):
+            pass
+
     def set_database_file_name(self, new_name:str):
 
         # make sure db name is a valid string

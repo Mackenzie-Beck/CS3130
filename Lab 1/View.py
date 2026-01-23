@@ -4,12 +4,18 @@
 class View:
     controller = None
 
+    def select_db(self):
+        print("Select a database file: ")
+        file_name = input()
+        self.controller.select_db()
+
+
     def main_menu(self):
         """Main entry point of the program."""
 
 
         print("--\n\n")
-        print("Employees:\n")
+        print("----- Main Menu -----\n")
 
         print("Select one of the following:\n")
         print("    1. Add a new employee\n")
