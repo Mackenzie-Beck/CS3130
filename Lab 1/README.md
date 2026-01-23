@@ -1,4 +1,4 @@
-# Employee Database Management System \
+# Employee Database Management System 
 A simple command-line employee database management system built with Python using the Model-View-Controller (MVC) design pattern.
 
 ## Overview
@@ -11,7 +11,7 @@ Add New Employee - Create new employee records with validation\
 Search Employee - Look up employees by their ID number\
 Remove Employee - Delete employee records with confirmation\
 Display All Employees - View all employees in the database\
-Input Validation - Ensures data integrity with checks for:\
+Input Validation - Ensures data integrity with checks for:
 - Unique employee IDs
 - Valid department assignments
 - Proper name formatting
@@ -23,7 +23,7 @@ Employee records are stored in the following format:
 ID:FirstName:LastName:Department\
 Example:\
 101:John:Doe:Engineering\
-102:Jane:Smith:Marketing\
+102:Jane:Smith:Marketing
 ## Architecture
 The application follows the MVC (Model-View-Controller) pattern:
 
