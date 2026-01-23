@@ -63,7 +63,7 @@ Python 3.10+ (uses match statement)
 No external dependencies required
 
 File Structure
-project/
+project/ /n
 ├── Controller.py    # Handles user input and application logic
 ├── Model.py         # Defines data structure and validation
 ├── View.py          # Manages user interface
