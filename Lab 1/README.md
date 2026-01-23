@@ -16,7 +16,7 @@ Proper name formatting
 
 
 
-Data Structure
+# Data Structure
 Employee records are stored in the following format:
 ID:FirstName:LastName:Department
 Example:
