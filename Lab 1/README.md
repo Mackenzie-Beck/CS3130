@@ -16,7 +16,7 @@ Proper name formatting
 
 
 
-# Data Structure
+## Data Structure
 Employee records are stored in the following format:
 ID:FirstName:LastName:Department
 Example:
@@ -63,7 +63,7 @@ Python 3.10+ (uses match statement)
 No external dependencies required
 
 File Structure
-project/ /n
+project/
 ├── Controller.py    # Handles user input and application logic
 ├── Model.py         # Defines data structure and validation
 ├── View.py          # Manages user interface
