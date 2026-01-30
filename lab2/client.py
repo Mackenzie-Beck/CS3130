@@ -17,21 +17,31 @@ class Client:
     ENCODER = 'utf-8'
     BUFFER = 1024
     sock = None
+    view = None
+    controller = None
+
 
     def bind_socket(self):
-        self.sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        self.sock.connect((self.SERVERIP,self.SERVERPORT))
+        # Do not open a persistent connection here.
+        # Controller.send_request() will open a new socket per request.
+        self.view = View.View()
+        self.controller = Controller.Controller()
+        self.controller.SERVERIP = self.SERVERIP
+        self.controller.SERVERPORT = self.SERVERPORT
+        self.controller.ENCODER = self.ENCODER
+        self.controller.BUFFER = self.BUFFER
+
+        self.view.controller = self.controller
+        self.controller.view = self.view
 
         self.start_client()
 
 
     def start_client(self):
-        data=input("Please enter your message: ")
-        self.sock.send(data.encode(self.ENCODER))
+        self.view.main_menu()
 
-        data=self.sock.recv(self.BUFFER).decode(self.ENCODER)
-        print(data)
 
+    
 
 if __name__ == "__main__":
     client = Client()

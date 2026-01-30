@@ -7,7 +7,13 @@ Alters the view .
 class Controller:
 
     View = None
-    Model = None
+    sock = None
+    # put all of these on the controller for now, just assign them to the same as client in client.bind_cosket()
+    # not the best but works for now
+    SERVERIP = None
+    SERVERPORT = None
+    ENCODER = None
+    BUFFER = None
 
 
 
@@ -31,35 +37,16 @@ class Controller:
         if sel.lower() == "n":
             print("No database provided, exiting program")
 
-    def parse_line(self, line: str):
-        # returns a list of the data elements for a single row in the database
-        tmp = line.strip()
-        data_list = tmp.split(":")
-        #print("Parsed line data: ", data_list)
-        return data_list
+
 
     def print_employee(self, data):
         print("Employee ID: ", data[0])
         print("\nEmployee name:", data[1], data[2])
         print("\nDepartment:", data[3])
 
-    def get_employee_data_by_id(self, id_num : int):
-        """return employee data for a row specified by employee id"""
-
-        #print("Searching for employee ID:", id_num)
-        try:
-            with open(self.Model.database_file_name, "r") as f:
-                for line in f:
-                    data = self.parse_line(line)
-                    #print("data[0]:", data[0])
-                    #print("id_num:", id_num)
-                    #print(data[0] == id_num)
-
-                    if data[0] == id_num:
-                        return data
-                return None
-        except FileNotFoundError:
-            self.handle_file_not_found()
+    def get_employee_data_by_id(self, id_num: int):
+        msg = f"get_employee_data_by_id({int(id_num)})"
+        return self.send_request(msg)
 
 
 
@@ -88,13 +75,20 @@ class Controller:
         # check if employee already exists
 
         data = self.get_employee_data_by_id(id_num)
-
-        if data:
+        if data != "None":
             print("Employee already exists! Please enter a different employee ID: ")
             return False
         
         return True
 
+
+    def get_valid_departments(self):
+        msg = "get_valid_departments()"
+        return self.send_request(msg)
+
+    def is_department_valid(self, department: str):
+        msg = f'is_department_valid("{department}")'
+        return self.send_request(msg)
 
 
     def add_new_employee(self):
@@ -146,23 +140,17 @@ class Controller:
         department = input()
 
         # Check if department exists
-
-        if department not in self.Model.valid_departments:
+        if self.is_department_valid(department) == "False":
             print("Department: ", department, " does not exist. Use one of the following: ")
-            print(self.Model.valid_departments)
+            print(self.get_valid_departments())
             self.add_new_employee()
         else:
             print("Adding new record to database:\n")
             new_record = id_num + ":" + fname + ":" + lname + ":" + department
-            try:
-                with open(self.Model.database_file_name, "a") as f:
-                    f.write(new_record+ '\n')
-            except FileNotFoundError:
-                self.handle_file_not_found()
-
-
-
-
+            
+            # quote the record and use send_request (opens a new socket per request)
+            msg = f'add_record_to_db("{new_record}")'
+            self.send_request(msg)
 
         print("\nWould you like to add another record? (Y/N): ")
         inp = input()
@@ -276,12 +264,19 @@ class Controller:
     def handle_input(self, selection : str):
         match selection:
             case "1":
-                self.add_new_employee()
+                self.add_new_employee() # todo
             case "2":
-                self.search_employee()
+                self.search_employee()# todo
             case "3":
-                self.remove_employee()
+                self.remove_employee()# todo
             case "4":
-                self.display_employees() 
+                self.display_employees() # todo
             case "5":
                 self.exit_program()
+
+    def send_request(self, msg: str) -> str:
+        import socket
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((self.SERVERIP, self.SERVERPORT))
+            s.send(msg.encode(self.ENCODER))
+            return s.recv(self.BUFFER).decode(self.ENCODER)

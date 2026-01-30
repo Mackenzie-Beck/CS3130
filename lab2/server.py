@@ -14,26 +14,96 @@ class Server:
     SERVERPORT = 20500
     ENCODER = 'utf-8'
     BUFFER = 1024
-    sock = None
+    model = None
 
-
-    def start_server(self):
-        while True:
-            connection_socket, client_address= self.sock.accept()
-            print(f"Connected with {client_address}")
-
-            message=connection_socket.recv(self.BUFFER).decode(self.ENCODER)
-            connection_socket.send(message.upper().encode(self.ENCODER))
-
-    def bind_socket(self):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.bind((self.SERVERIP,self.SERVERPORT))
-        self.sock.listen()
-        print("Server is waiting for connection...")
+    def __init__(self):
+        self.model = Model.Model()
+        self.bind_socket()
         self.start_server()
 
 
 
+    def bind_socket(self):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.sock.bind((self.SERVERIP, self.SERVERPORT))
+        self.sock.listen()
+        print("Server is waiting for connection...")
+
+
+    def start_server(self):
+        while True:
+            connection_socket, client_address = self.sock.accept()
+            print(f"Connected with {client_address}")
+
+            response = self.process_message((connection_socket.recv(self.BUFFER).decode(self.ENCODER)))
+            #response = self.process_message(function, int(data))
+            connection_socket.send(str(response).encode(self.ENCODER))
+            connection_socket.close()
+
+    def parse_line(self, line: str):
+        # returns a list of the data elements for a single row in the database
+        tmp = line.strip()
+        data_list = tmp.split(":")
+        #print("Parsed line data: ", data_list)
+        return data_list
+
+    def get_employee_data_by_id(self, id_num):
+        """return employee data for a row specified by employee id"""
+        id_str = str(id_num)
+        print("Searching for employee ID:", id_str)
+        try:
+            with open(self.model.database_file_name, "r") as f:
+                for line in f:
+                    data = self.parse_line(line)
+                    if data[0] == id_str:
+                        print(f"Employee {id_str} found")
+                        return data
+                print(f"Employee {id_str} not found")
+                return None
+        except FileNotFoundError:
+            self.handle_file_not_found()
+            return None
+
+    def is_department_valid(self, department:str):
+        return department in self.model.valid_departments
+
+    def get_valid_departments(self):
+        return self.model.valid_departments
+
+
+    def add_record_to_db(self, new_record):
+        try:
+            db = self.model.database_file_name
+            import os
+            # open in binary append+ so we can inspect/modify the last byte reliably
+            with open(db, "ab+") as f:
+                f.seek(0, os.SEEK_END)
+                if f.tell() != 0:
+                    f.seek(-1, os.SEEK_END)
+                    if f.read(1) != b'\n':
+                        f.write(b'\n')
+                f.write((new_record + '\n').encode(self.ENCODER))
+        except FileNotFoundError:
+            self.handle_file_not_found()
+
+
+    def process_message(self, message):
+        print("process msg")
+        # message expected like: get_employee_data_by_id(1234)
+        funcs = {
+            "get_employee_data_by_id": self.get_employee_data_by_id,
+            "is_department_valid": self.is_department_valid,
+            "get_valid_departments": self.get_valid_departments,
+            "add_record_to_db": self.add_record_to_db
+        }
+        try:
+            # Restrict builtins and allow only the mapped functions
+            result = eval(message, {"__builtins__": {}}, funcs)
+        except Exception as e:
+            result = f"ERROR: {e}"
+        return result
+
+
 if __name__ == "__main__":
     serv = Server()
-    serv.bind_socket()
