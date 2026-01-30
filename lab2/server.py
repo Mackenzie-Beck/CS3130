@@ -58,7 +58,7 @@ class Server:
                     data = self.parse_line(line)
                     if data[0] == id_str:
                         print(f"Employee {id_str} found")
-                        return data
+                        return str(data[0]) + " "+ data[1] + " "+data[2] +" "+data[3]
                 print(f"Employee {id_str} not found")
                 return None
         except FileNotFoundError:
@@ -87,6 +87,33 @@ class Server:
         except FileNotFoundError:
             self.handle_file_not_found()
 
+    def is_db_empty(self):
+        with open(self.Model.database_file_name, "r") as f: 
+            if not f.read(1):
+                print("Database is currently empty!")
+                return True
+            return False
+
+    def delete_record(self, id_num):
+        try:
+            employee_records = []
+            with open(self.model.database_file_name, "r") as f:
+                for line in f:
+                    line_data = self.parse_line(line)
+                    if line_data[0] == id_num:
+                        continue
+                    else:
+                        employee_records.append(line_data)
+
+                    # clear the existing file content and add records
+                    with open(self.model.database_file_name, "w") as f:
+                        for record in employee_records:
+                            new_line = record[0] + ":" + record[1] + ":" + record[2] + ":" + record [3]
+                            f.write(new_line + "\n")
+        except FileNotFoundError:
+            return "FileNotFoundError"
+        
+
 
     def process_message(self, message):
         print("process msg")
@@ -95,8 +122,11 @@ class Server:
             "get_employee_data_by_id": self.get_employee_data_by_id,
             "is_department_valid": self.is_department_valid,
             "get_valid_departments": self.get_valid_departments,
-            "add_record_to_db": self.add_record_to_db
+            "add_record_to_db": self.add_record_to_db,
+            "is_db_empty": self.is_db_empty,
+            "delete_record": self.delete_record
         }
+    
         try:
             # Restrict builtins and allow only the mapped functions
             result = eval(message, {"__builtins__": {}}, funcs)

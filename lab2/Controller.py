@@ -6,7 +6,7 @@ Alters the view .
 
 class Controller:
 
-    View = None
+    view = None
     sock = None
     # put all of these on the controller for now, just assign them to the same as client in client.bind_cosket()
     # not the best but works for now
@@ -21,19 +21,15 @@ class Controller:
         self.Model.create_new_db()
 
     def is_db_empty(self):
-        
-        with open(self.Model.database_file_name, "r") as f: 
-            if not f.read(1):
-                print("Database is currently empty!")
-                return True
-            return False
+        msg = "is_db_empty"
+        return self.send_request(msg)
 
     def handle_file_not_found(self):
         print("Database not found, would you like to create one? (Y/N)")
         sel = input()
         if sel.lower() == "y":
             self.create_new_db()
-            self.View.main_menu()
+            self.view.main_menu()
         if sel.lower() == "n":
             print("No database provided, exiting program")
 
@@ -159,7 +155,7 @@ class Controller:
         if tmp_inp == "y":
             self.add_new_employee()
         elif tmp_inp == "n":
-            self.View.main_menu()
+            self.view.main_menu()
         else:
             print("\nReturning to main menu.")
 
@@ -176,10 +172,12 @@ class Controller:
             id_num = input()
 
         data = self.get_employee_data_by_id(id_num)
+        data = data.split()
 
-        if self.is_db_empty():
-            self.View.main_menu()
-        if data:
+        
+        if self.is_db_empty() == "True":
+            self.view.main_menu()
+        if data[0] == None:
             print("Employee found!")
             print("--------------------\n")
             self.print_employee(data)
@@ -192,10 +190,10 @@ class Controller:
             if inp == "1":
                 self.search_employee()
             if inp == "2":
-                self.View.main_menu()
+                self.view.main_menu()
             else:
                 print("/Now thats not a number like I said but I'll just take you back to the main menu.\n")
-                self.View.main_menu()
+                self.view.main_menu()
         else:
             print("Employee not found. Please try again.")
             self.search_employee()
@@ -205,39 +203,34 @@ class Controller:
     def remove_employee(self):
         print("Enter ID of employee you wish to remove: ")
         id_num = input()
-        employee_records = []
+        
+
 
         while not self.is_id_num_valid_number(id_num):
             id_num = input()
 
-        if self.is_db_empty():
-            self.View.main_menu()
 
-        if not self.get_employee_data_by_id(id_num):
+        if self.is_db_empty() == "True":
+            self.view.main_menu()
+
+
+
+
+        if self.get_employee_data_by_id(id_num) == "None":
             print("Employee", id_num, "not found")
             self.remove_employee()
+
+
         else:
             print("Are you sure you want to delete employee:", id_num, "(Y/N)")
             response = input()
             if response.lower() == 'y':
                 print("Deleting employee record from database")
-                try:
-                    with open(self.Model.database_file_name, "r") as f:
-                        for line in f:
-                            line_data = self.parse_line(line)
-                            if line_data[0] == id_num:
-                                continue
-                            else:
-                                employee_records.append(line_data)
+                msg = f"delete_record({int(id_num)})"
+                return self.send_request(msg)
+        self.view.main_menu()
 
-                    # clear the existing file content and add records
-                    with open(self.Model.database_file_name, "w") as f:
-                        for record in employee_records:
-                            new_line = record[0] + ":" + record[1] + ":" + record[2] + ":" + record [3]
-                            f.write(new_line + "\n")
-                except FileNotFoundError:
-                    self.handle_file_not_found()
-                self.View.main_menu()
+
 
 
 
@@ -252,7 +245,7 @@ class Controller:
                     self.print_employee(self.parse_line(line))
                     print("\n-----")
 
-                self.View.main_menu()
+                self.view.main_menu()
         except FileNotFoundError:
             self.handle_file_not_found()
 
@@ -264,11 +257,11 @@ class Controller:
     def handle_input(self, selection : str):
         match selection:
             case "1":
-                self.add_new_employee() # todo
+                self.add_new_employee() 
             case "2":
-                self.search_employee()# todo
+                self.search_employee()
             case "3":
-                self.remove_employee()# todo
+                self.remove_employee() #todo
             case "4":
                 self.display_employees() # todo
             case "5":
