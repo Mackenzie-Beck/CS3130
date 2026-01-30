@@ -29,5 +29,10 @@ class Client:
         data=input("Please enter your message: ")
         self.sock.send(data.encode(self.ENCODER))
 
-        data=.self.sock.recv(self.BUFFER).decode(self.ENCODER)
+        data=self.sock.recv(self.BUFFER).decode(self.ENCODER)
         print(data)
+
+
+if __name__ == "__main__":
+    client = Client()
+    client.bind_socket()

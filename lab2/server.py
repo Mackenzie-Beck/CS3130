@@ -16,6 +16,7 @@ class Server:
     BUFFER = 1024
     sock = None
 
+
     def start_server(self):
         while True:
             connection_socket, client_address= self.sock.accept()
@@ -29,7 +30,10 @@ class Server:
         self.sock.bind((self.SERVERIP,self.SERVERPORT))
         self.sock.listen()
         print("Server is waiting for connection...")
-        self.start_server(self)
+        self.start_server()
 
 
 
+if __name__ == "__main__":
+    serv = Server()
+    serv.bind_socket()
