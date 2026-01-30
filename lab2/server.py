@@ -97,19 +97,20 @@ class Server:
     def delete_record(self, id_num):
         try:
             employee_records = []
+            id_str = str(id_num)
             with open(self.model.database_file_name, "r") as f:
                 for line in f:
                     line_data = self.parse_line(line)
-                    if line_data[0] == id_num:
+                    if line_data[0] == id_str:
                         continue
                     else:
                         employee_records.append(line_data)
 
                     # clear the existing file content and add records
-                    with open(self.model.database_file_name, "w") as f:
-                        for record in employee_records:
-                            new_line = record[0] + ":" + record[1] + ":" + record[2] + ":" + record [3]
-                            f.write(new_line + "\n")
+            with open(self.model.database_file_name, "w") as f:
+                for record in employee_records:
+                    new_line = record[0] + ":" + record[1] + ":" + record[2] + ":" + record [3]
+                    f.write(new_line + "\n")
         except FileNotFoundError:
             return "FileNotFoundError"
         
