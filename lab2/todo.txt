@@ -1,2 +1,9 @@
 
-1. Restructure main so that the 
+1. Restructure main so that the database file is on the server, model should be mostly unchanged
+    - actually probably just get rid of main and replace with client and server
+        - Controller and view can be on the client, this makes updating them easier
+        - server will only have access to the model 
+        - Controller needs a socket value 
+2. List of usernames which are allowed to access program
+    - controller will have to query user for username and verify that it is correct with the model
+    - model needs list of usernames
