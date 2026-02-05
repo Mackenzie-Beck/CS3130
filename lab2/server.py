@@ -114,7 +114,17 @@ class Server:
         except FileNotFoundError:
             return "FileNotFoundError"
         
+    def get_records(self):
+        try:
+            records = []
+            with open(self.model.database_file_name, "r") as f:
+                for line in f:
+                   records.append(line.strip())
+                return "\n".join(records)
 
+        except FileNotFoundError:
+            self.handle_file_not_found()
+            return "ERROR: Database file not found"
 
     def process_message(self, message):
         print("process msg")
@@ -125,7 +135,8 @@ class Server:
             "get_valid_departments": self.get_valid_departments,
             "add_record_to_db": self.add_record_to_db,
             "is_db_empty": self.is_db_empty,
-            "delete_record": self.delete_record
+            "delete_record": self.delete_record,
+            "get_records": self.get_records
         }
     
         try:

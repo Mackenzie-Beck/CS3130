@@ -174,10 +174,9 @@ class Controller:
         data = self.get_employee_data_by_id(id_num)
         data = data.split()
 
-        
         if self.is_db_empty() == "True":
             self.view.main_menu()
-        if data[0] == None:
+        if data[0] != None:
             print("Employee found!")
             print("--------------------\n")
             self.print_employee(data)
@@ -227,7 +226,7 @@ class Controller:
             if response.lower() == 'y':
                 print("Deleting employee record from database")
                 msg = f"delete_record({int(id_num)})"
-                return self.send_request(msg)
+                self.send_request(msg)
         self.view.main_menu()
 
 
@@ -238,16 +237,19 @@ class Controller:
 
     def display_employees(self):
         print("Display employees:\n")
-        try:
-            with open(self.Model.database_file_name, "r") as f:
-                self.is_db_empty()
-                for line in f:
-                    self.print_employee(self.parse_line(line))
-                    print("\n-----")
+        msg = f"get_records()"
+        response = self.send_request(msg)
 
-                self.view.main_menu()
-        except FileNotFoundError:
-            self.handle_file_not_found()
+        if response.startswith("ERROR"):
+            print(response)
+            return
+        
+        records = response.split("\n")  # Split by newline to get individual records
+        for record in records:
+            if record:  # Skip empty lines
+                fields = record.split(":")  # Split by colon to get fields
+                print(f"ID: {fields[0]}, Name: {fields[1]} {fields[2]}, Department: {fields[3]}")
+        self.view.main_menu()
 
     def exit_program(self):
         print("Exiting Program\n")

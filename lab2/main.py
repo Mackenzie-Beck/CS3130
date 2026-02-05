@@ -8,9 +8,15 @@ def main():
     model = Model.Model()
     view = View.View()
 
-    controller.View = view
+    controller.view = view
     controller.Model = model
     view.controller = controller
+
+    # Initialize server connection parameters
+    controller.SERVERIP = 'localhost'
+    controller.SERVERPORT = 20500
+    controller.ENCODER = 'utf-8'
+    controller.BUFFER = 1024
 
     view.main_menu()
 
