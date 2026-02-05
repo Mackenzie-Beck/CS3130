@@ -261,7 +261,7 @@ class Controller:
             case "2":
                 self.search_employee()
             case "3":
-                self.remove_employee() #todo
+                self.remove_employee() 
             case "4":
                 self.display_employees() # todo
             case "5":
