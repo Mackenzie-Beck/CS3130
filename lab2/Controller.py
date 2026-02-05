@@ -226,7 +226,7 @@ class Controller:
             if response.lower() == 'y':
                 print("Deleting employee record from database")
                 msg = f"delete_record({int(id_num)})"
-                return self.send_request(msg)
+                self.send_request(msg)
         self.view.main_menu()
 
 
