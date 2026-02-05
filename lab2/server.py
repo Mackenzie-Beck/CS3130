@@ -24,11 +24,14 @@ class Server:
 
 
     def bind_socket(self):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.sock.bind((self.SERVERIP, self.SERVERPORT))
-        self.sock.listen()
-        print("Server is waiting for connection...")
+        try:
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.sock.bind((self.SERVERIP, self.SERVERPORT))
+            self.sock.listen()
+            print("Server is waiting for connection...")
+        except OSError:
+            print("OSError in bind_socket() on server.py")
 
 
     def start_server(self):
