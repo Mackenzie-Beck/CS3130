@@ -9,6 +9,8 @@ class Model:
 
     valid_departments = ["Science", "Art", "Math", "English"]
 
+    valid_usernames = ["mack"]
+
     database_file_name = "data.txt"
 
 

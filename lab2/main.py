@@ -18,7 +18,7 @@ def main():
     controller.ENCODER = 'utf-8'
     controller.BUFFER = 1024
 
-    view.main_menu()
+    view.username()
 
 
 if __name__ == "__main__":

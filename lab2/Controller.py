@@ -33,7 +33,16 @@ class Controller:
         if sel.lower() == "n":
             print("No database provided, exiting program")
 
-
+    def is_valid_username(self, username:str):
+            msg = f'is_valid_username("{username}")'
+            response = self.send_request(msg)
+            print(response)
+            if response.lower() == "true":
+                print("username is valid")
+                self.view.main_menu()
+            else:
+                print("username invalid!")
+                exit()
 
     def print_employee(self, data):
         print("Employee ID: ", data[0])

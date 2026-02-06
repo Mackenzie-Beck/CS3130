@@ -29,3 +29,10 @@ class View:
         print("\n\n--")
 
         self.controller.handle_input(selection)
+
+
+    def username(self):
+        print("Enter user name")
+        user_name = input()
+
+        self.controller.is_valid_username(user_name)

@@ -21,7 +21,9 @@ class Server:
         self.bind_socket()
         self.start_server()
 
-
+    def is_valid_username(self, username:str):
+        print(username)
+        return str(username in self.model.valid_usernames)
 
     def bind_socket(self):
         try:
@@ -116,8 +118,9 @@ class Server:
             return False
 
     def delete_record(self, id_num):
+        print("delete record")
         if not self.is_id_num_valid_number():
-            print("ID number si not valid")
+            print("ID number is not valid")
         try:
             employee_records = []
             id_str = str(id_num)
@@ -128,7 +131,7 @@ class Server:
                         continue
                     else:
                         employee_records.append(line_data)
-
+                    print(employee_records)
                     # clear the existing file content and add records
             with open(self.model.database_file_name, "w") as f:
                 for record in employee_records:
@@ -159,7 +162,8 @@ class Server:
             "add_record_to_db": self.add_record_to_db,
             "is_db_empty": self.is_db_empty,
             "delete_record": self.delete_record,
-            "get_records": self.get_records
+            "get_records": self.get_records,
+            "is_valid_username": self.is_valid_username
         }
     
         try:
