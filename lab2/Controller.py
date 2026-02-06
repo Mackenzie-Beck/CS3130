@@ -191,7 +191,7 @@ class Controller:
             if inp == "2":
                 self.view.main_menu()
             else:
-                print("/Now thats not a number like I said but I'll just take you back to the main menu.\n")
+                print("I'll just take you back to the main menu.\n")
                 self.view.main_menu()
         else:
             print("Employee not found. Please try again.")

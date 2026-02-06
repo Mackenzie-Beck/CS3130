@@ -69,6 +69,7 @@ class Server:
     def get_employee_data_by_id(self, id_num):
         """return employee data for a row specified by employee id"""
         if not self.is_id_num_valid_number(id_num):
+            print("ID number is not valid")
             return
         id_str = str(id_num)
         print("Searching for employee ID:", id_str)
@@ -115,6 +116,8 @@ class Server:
             return False
 
     def delete_record(self, id_num):
+        if not self.is_id_num_valid_number():
+            print("ID number si not valid")
         try:
             employee_records = []
             id_str = str(id_num)
