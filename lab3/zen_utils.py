@@ -27,14 +27,9 @@ def create_srv_socket(address):
 
 
 
-
-def handle_request(sock):
-    """Receive a single client request on `sock` and send the answer."""
-    request = recv_until(sock, b'?')
-
-
 def recv_until(sock, suffix):
     """Receive bytes over socket `sock` until we receive the `suffix`."""
+    print("recv_until")
     message = sock.recv(4096)
     if not message:
         raise EOFError('socket closed')

@@ -8,8 +8,8 @@ def main():
     model = Model.Model()
     view = View.View()
 
+    
     controller.view = view
-    controller.Model = model
     view.controller = controller
 
     # Initialize server connection parameters

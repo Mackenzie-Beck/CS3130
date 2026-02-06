@@ -40,6 +40,7 @@ class Server:
             self.handle_conversation(sock, address)
 
     def handle_conversation(self, sock, address):
+        print("handle conversation")
         """Converse with a client over `sock` until they are done talking."""
         try:
             while True:
@@ -54,9 +55,22 @@ class Server:
     def handle_request(self, sock):
         """Receive a single client request on `sock` and send the answer."""
         request = zen_utils.recv_until(sock, b'?')
-        print(request)
-
-
+        print("Raw request bytes:", request)
+        try:
+            message = request.decode(self.ENCODER)
+        except Exception:
+            message = request.decode('utf-8', errors='replace')
+        # remove the trailing '?' used as the protocol delimiter
+        if message.endswith('?'):
+            message = message[:-1]
+        print("Decoded message:", message)
+        # Process the request and send a response back to the client
+        result = self.process_message(message)
+        if result is None:
+            result_str = "None"
+        else:
+            result_str = str(result)
+        sock.sendall((result_str+"?").encode(self.ENCODER))
 
     def is_id_num_valid_number(self, id_num:str):
         print("is_id_num_valid_number")
@@ -87,6 +101,7 @@ class Server:
         data_list = tmp.split(":")
         #print("Parsed line data: ", data_list)
         return data_list
+    
 
     def get_employee_data_by_id(self, id_num):
         """return employee data for a row specified by employee id"""
@@ -136,7 +151,8 @@ class Server:
                 print("Database is currently empty!")
                 return True
             return False
-
+    
+    
     def delete_record(self, id_num):
         if not self.is_id_num_valid_number(id_num):
             print("ID number is not valid")

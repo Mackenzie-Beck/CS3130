@@ -3,6 +3,8 @@ Controller to handle all user inputs.
 Interacts with the Model.
 Alters the view .
 """
+import socket
+import zen_utils
 
 class Controller:
 
@@ -33,10 +35,14 @@ class Controller:
         if sel.lower() == "n":
             print("No database provided, exiting program")
 
+    def connect_to_server(self):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.connect((self.SERVERIP, self.SERVERPORT))
+        print("connect to server")
+
     def is_valid_username(self, username:str):
             msg = f'is_valid_username("{username}")'
             response = self.send_request(msg)
-            print(response)
             if response.lower() == "true":
                 print("username is valid")
                 self.view.main_menu()
@@ -279,8 +285,11 @@ class Controller:
                 self.exit_program()
 
     def send_request(self, msg: str) -> str:
-        import socket
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect((self.SERVERIP, self.SERVERPORT))
-            s.send(msg.encode(self.ENCODER))
-            return s.recv(self.BUFFER).decode(self.ENCODER)
+        # append delimeter to msg
+        msg = msg + "?"
+        self.sock.sendall(msg.encode(self.ENCODER))
+        response = zen_utils.recv_until(self.sock, b'?')
+        print(response)
+        response = response.decode(self.ENCODER)
+        print(response)
+        return response
