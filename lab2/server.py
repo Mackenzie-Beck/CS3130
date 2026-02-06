@@ -33,6 +33,21 @@ class Server:
         except OSError:
             print("OSError in bind_socket() on server.py")
 
+    def is_id_num_valid_number(self, id_num:str):
+                # check if employee id is a valid int
+        #print("is_id_num_valid")
+        try:
+            int(id_num)
+        except ValueError:
+            print("Employee ID must be a number, please re-enter: ")
+            return False
+        if int(id_num) < 0:
+            print("Employee Id must be a positive integer, please re-enter: ")
+            return False
+        if len(id_num) != 4:
+            print("Employee ID must be 4 digits long, please re-enter: ")
+            return False
+        return True
 
     def start_server(self):
         while True:
@@ -53,6 +68,8 @@ class Server:
 
     def get_employee_data_by_id(self, id_num):
         """return employee data for a row specified by employee id"""
+        if not self.is_id_num_valid_number(id_num):
+            return
         id_str = str(id_num)
         print("Searching for employee ID:", id_str)
         try:
