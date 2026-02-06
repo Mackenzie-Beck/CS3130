@@ -5,14 +5,6 @@
 
 import argparse, socket, time
 
-aphorisms = {b'Beautiful is better than?': b'Ugly.',
-             b'Explicit is better than?': b'Implicit.',
-             b'Simple is better than?': b'Complex.'}
-
-def get_answer(aphorism):
-    """Return the string response to a particular Zen-of-Python aphorism."""
-    time.sleep(0.0)  # increase to simulate an expensive operation
-    return aphorisms.get(aphorism, b'Error: unknown aphorism.')
 
 def parse_command_line(description):
     """Parse command line and return a socket address."""
@@ -54,9 +46,8 @@ def handle_conversation(sock, address):
 
 def handle_request(sock):
     """Receive a single client request on `sock` and send the answer."""
-    aphorism = recv_until(sock, b'?')
-    answer = get_answer(aphorism)
-    sock.sendall(answer)
+    request = recv_until(sock, b'?')
+
 
 def recv_until(sock, suffix):
     """Receive bytes over socket `sock` until we receive the `suffix`."""

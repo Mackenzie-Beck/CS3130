@@ -1,6 +1,6 @@
 import socket
 import Model
-
+import zen_utils
 
 
 
@@ -15,25 +15,22 @@ class Server:
     ENCODER = 'utf-8'
     BUFFER = 1024
     model = None
+    listener = None
 
     def __init__(self):
         self.model = Model.Model()
-        self.bind_socket()
+        self.create_listener()
         self.start_server()
 
     def is_valid_username(self, username:str):
         print(username)
         return str(username in self.model.valid_usernames)
 
-    def bind_socket(self):
+    def create_listener(self):
         try:
-            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            self.sock.bind((self.SERVERIP, self.SERVERPORT))
-            self.sock.listen()
-            print("Server is waiting for connection...")
+           self.listener = zen_utils.create_srv_socket(self.SERVERIP)
         except OSError:
-            print("OSError in bind_socket() on server.py")
+            print("OSError in create_listener() on server.py")
 
     def is_id_num_valid_number(self, id_num:str):
         print("is_id_num_valid_number")
