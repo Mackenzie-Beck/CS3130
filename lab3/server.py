@@ -1,7 +1,7 @@
 import socket
 import Model
 import zen_utils
-
+from threading import Thread
 
 
 
@@ -28,9 +28,35 @@ class Server:
 
     def create_listener(self):
         try:
-           self.listener = zen_utils.create_srv_socket(self.SERVERIP)
+           self.listener = zen_utils.create_srv_socket((self.SERVERIP, self.SERVERPORT))
         except OSError:
             print("OSError in create_listener() on server.py")
+
+    def accept_connections_forever(self, listener):
+        """Forever answer incoming connections on a listening socket."""
+        while True:
+            sock, address = listener.accept()
+            print('Accepted connection from {}'.format(address))
+            self.handle_conversation(sock, address)
+
+    def handle_conversation(self, sock, address):
+        """Converse with a client over `sock` until they are done talking."""
+        try:
+            while True:
+                self.handle_request(sock)
+        except EOFError:
+            print('Client socket to {} has closed'.format(address))
+        except Exception as e:
+            print('Client {} error: {}'.format(address, e))
+        finally:
+            sock.close()
+
+    def handle_request(self, sock):
+        """Receive a single client request on `sock` and send the answer."""
+        request = zen_utils.recv_until(sock, b'?')
+        print(request)
+
+
 
     def is_id_num_valid_number(self, id_num:str):
         print("is_id_num_valid_number")
@@ -49,15 +75,11 @@ class Server:
             return False
         return True
 
-    def start_server(self):
-        while True:
-            connection_socket, client_address = self.sock.accept()
-            print(f"Connected with {client_address}")
+    def start_server(self, workers = 4):
+        t = (self.listener,)
+        for i in range(workers):
+            Thread(target=self.accept_connections_forever, args=t).start()
 
-            response = self.process_message((connection_socket.recv(self.BUFFER).decode(self.ENCODER)))
-            #response = self.process_message(function, int(data))
-            connection_socket.send(str(response).encode(self.ENCODER))
-            connection_socket.close()
 
     def parse_line(self, line: str):
         # returns a list of the data elements for a single row in the database

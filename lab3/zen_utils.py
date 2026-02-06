@@ -25,24 +25,8 @@ def create_srv_socket(address):
     print('Listening at {}'.format(address))
     return listener
 
-def accept_connections_forever(listener):
-    """Forever answer incoming connections on a listening socket."""
-    while True:
-        sock, address = listener.accept()
-        print('Accepted connection from {}'.format(address))
-        handle_conversation(sock, address)
 
-def handle_conversation(sock, address):
-    """Converse with a client over `sock` until they are done talking."""
-    try:
-        while True:
-            handle_request(sock)
-    except EOFError:
-        print('Client socket to {} has closed'.format(address))
-    except Exception as e:
-        print('Client {} error: {}'.format(address, e))
-    finally:
-        sock.close()
+
 
 def handle_request(sock):
     """Receive a single client request on `sock` and send the answer."""
