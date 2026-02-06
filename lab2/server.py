@@ -36,6 +36,7 @@ class Server:
             print("OSError in bind_socket() on server.py")
 
     def is_id_num_valid_number(self, id_num:str):
+        print("is_id_num_valid_number")
                 # check if employee id is a valid int
         #print("is_id_num_valid")
         try:
@@ -118,8 +119,7 @@ class Server:
             return False
 
     def delete_record(self, id_num):
-        print("delete record")
-        if not self.is_id_num_valid_number():
+        if not self.is_id_num_valid_number(id_num):
             print("ID number is not valid")
         try:
             employee_records = []
@@ -132,7 +132,7 @@ class Server:
                     else:
                         employee_records.append(line_data)
                     print(employee_records)
-                    # clear the existing file content and add records
+                        # clear the existing file content and add records
             with open(self.model.database_file_name, "w") as f:
                 for record in employee_records:
                     new_line = record[0] + ":" + record[1] + ":" + record[2] + ":" + record [3]
@@ -153,7 +153,7 @@ class Server:
             return "ERROR: Database file not found"
 
     def process_message(self, message):
-        print("process msg")
+        print("process msg, ", message )
         # message expected like: get_employee_data_by_id(1234)
         funcs = {
             "get_employee_data_by_id": self.get_employee_data_by_id,
