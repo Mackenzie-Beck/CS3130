@@ -15,6 +15,7 @@ def client(address, cause_error=False):
     for aphorism in random.sample(aphorisms, 3):
         sock.sendall(aphorism)
         print(aphorism, zen_utils.recv_until(sock, b'.'))
+    test = input()
     sock.close()
 
 if __name__ == '__main__':
