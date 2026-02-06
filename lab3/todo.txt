@@ -1,0 +1,10 @@
+
+
+1. Create a threaded server. I think the only change is need to rename server.py to serv_instance or something and then have srv_threded.py import and call funcitons to 
+set up the networking then have a start_threads function to actually initilizae the threads.
+
+2. Frame data ie. have a char in each message to mark where the end of the message is
+
+can just import zen_utils and srv_threaded and modify them to work with my architecture. 
+
+3. Need to add some funciton which hangs for a bit so I can test multiple client connections at the same time
