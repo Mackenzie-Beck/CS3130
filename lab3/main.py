@@ -17,6 +17,7 @@ def main():
     controller.SERVERPORT = 20500
     controller.ENCODER = 'utf-8'
     controller.BUFFER = 1024
+    controller.connect_to_server()
 
     view.username()
 

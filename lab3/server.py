@@ -84,7 +84,7 @@ class Server:
         if int(id_num) < 0:
             print("Employee Id must be a positive integer, please re-enter: ")
             return False
-        if len(id_num) != 4:
+        if len(str(id_num)) != 4:
             print("Employee ID must be 4 digits long, please re-enter: ")
             return False
         return True

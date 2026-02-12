@@ -29,7 +29,7 @@ def create_srv_socket(address):
 
 def recv_until(sock, suffix):
     """Receive bytes over socket `sock` until we receive the `suffix`."""
-    print("recv_until")
+    # print("recv_until on sen_utils")
     message = sock.recv(4096)
     if not message:
         raise EOFError('socket closed')

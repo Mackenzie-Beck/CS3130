@@ -18,7 +18,6 @@ class Controller:
     BUFFER = None
 
 
-
     def create_new_db(self):
         self.Model.create_new_db()
 
@@ -56,7 +55,7 @@ class Controller:
         print("\nDepartment:", data[3])
 
     def get_employee_data_by_id(self, id_num: int):
-        msg = f"get_employee_data_by_id({int(id_num)})"
+        msg = f"get_employee_data_by_id({str(id_num)})"
         return self.send_request(msg)
 
 
@@ -72,7 +71,9 @@ class Controller:
         if int(id_num) < 0:
             print("Employee Id must be a positive integer, please re-enter: ")
             return False
-        if len(id_num) != 4:
+        
+        
+        if len(str(id_num)) != 4:
             print("Employee ID must be 4 digits long, please re-enter: ")
             return False
         return True
@@ -84,8 +85,8 @@ class Controller:
             return False
 
         # check if employee already exists
-
         data = self.get_employee_data_by_id(id_num)
+
         if data != "None":
             print("Employee already exists! Please enter a different employee ID: ")
             return False
@@ -289,7 +290,6 @@ class Controller:
         msg = msg + "?"
         self.sock.sendall(msg.encode(self.ENCODER))
         response = zen_utils.recv_until(self.sock, b'?')
-        print(response)
         response = response.decode(self.ENCODER)
-        print(response)
+        response = response[0:-1]
         return response
