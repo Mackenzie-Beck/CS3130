@@ -9,8 +9,5 @@ class employee(models.Model):
     lname = models.CharField(max_length=50, null=False, blank=False, validators=[validate_name])
     email = models.CharField(max_length=50, null=False, blank=False, validators=[validate_email])
     address = models.CharField(max_length=100, null=False, blank=False)
-    visible = models.BooleanField(null=False, blank=False, default=True)
-
-
     def __str__(self):
         return str(self.emp_id) + ":" +str(self.fname) + ":" +str(self.lname) + ":" +str(self.email) + ":" +str(self.address) 

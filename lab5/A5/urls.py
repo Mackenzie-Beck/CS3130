@@ -10,6 +10,5 @@ urlpatterns = [
     path('about/', views.aboutpage, name= 'aboutpage'),
     path('', views.mainpage, name = 'mainpage'),
     path('newemployee/', views.addNewEmployee, name = 'addemployee'),
-    path('employeesearch/', views.employeesearch, name = 'employeesearch'),
-    path('hide/', views.employeehide, name = 'employeehide')
+    path('employeesearch/', views.employeesearch, name = 'employeesearch')
 ]

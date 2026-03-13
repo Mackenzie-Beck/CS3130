@@ -37,7 +37,7 @@ def addNewEmployee(request):
 
 from .models import employee
 def employeelist(request):
-    employees = employee.objects.filter(visible=True)
+    employees = employee.objects.all()
     return render(request, 'home.html', {'elist': employees})
 
 
@@ -48,27 +48,13 @@ def employeesearch(request):
         selected = request.POST.get('search_field')
         if selected == 'fname':
             sterm = request.POST['stext']
-            elist = employee.objects.filter(fname__startswith=sterm, visible=True)
+            elist = employee.objects.filter(fname__startswith=sterm)
             return render(request, 'home.html', {'elist': elist})
         elif selected == 'lname':
             sterm = request.POST['stext']
-            elist = employee.objects.filter(lname__startswith=sterm, visible=True)
+            elist = employee.objects.filter(lname__startswith=sterm)
             return render(request, 'home.html', {'elist': elist})
 
 
     form = SearchForm()    
     return render(request, 'employeesearch.html', {'form':form})
-
-
-from .forms import EmployeeHideForm
-def employeehide(request):
-    if request.method == 'POST':
-        form = EmployeeHideForm(request.POST)
-        if form.is_valid():
-            sterm = form.cleaned_data['empid']
-            employee.objects.filter(emp_id=sterm).update(visible=False)   
-            elist = employee.objects.filter(visible=True)     
-            return render(request, 'home.html', {'elist':elist})
-        return render(request,'employeehide.html', {'form':form})
-    form = EmployeeHideForm()
-    return render(request, 'employeehide.html', {'form':form})

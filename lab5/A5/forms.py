@@ -20,8 +20,3 @@ class SearchForm(forms.Form):
         choices=FIELD_CHOICES,
         widget= forms.RadioSelect,
         label= "Select your search Field",)
-    
-
-
-class EmployeeHideForm(forms.Form):
-    empid = forms.IntegerField(label='Employee ID', min_value=1000)
