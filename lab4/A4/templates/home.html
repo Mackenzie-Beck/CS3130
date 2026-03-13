@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h3>Home Page</h3>
+    {% for employee in elist %}
+        <p>{{ employee.emp_id }}</p>
+        <p>{{ employee.fname }}</p>
+        <p>{{ employee.lname }}</p>
+        <p>{{ employee.email }}</p> 
+        <p>{{ employee.address }}</p> 
+        <hr>
+    {% endfor %}
+{% endblock content %}
