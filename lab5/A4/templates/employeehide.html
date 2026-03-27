@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+    <form method="post" id="hideForm">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <br/>
+        <button type="submit" id="hidebtn">Hide Employee</button>
+    </form>
+
+    <script>
+        (function(){
+            const form = document.getElementById('hideForm');
+            form.addEventListener('submit', function(e){
+                const idInput = form.querySelector('[name="empid"]');
+                const empid = idInput ? idInput.value.trim() : '';
+                const msg = empid ? `Hide employee ${empid}?` : 'Hide the employee?';
+                
+                
+                if (!confirm(msg)){
+                    e.preventDefault(); //prevents the defeault behaviour of the event e. Which in this case is submitting the form object. Only happens when the msg is not confirmed ie. canceled by user
+                }
+            });
+        })();
+    </script>
+
+{% endblock content %}

@@ -1,0 +1,6 @@
+<h3 style="font-style: italic;"> User Registration </h3>
+<form method="post" action="">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" name="register" value="Register">
+</form>
